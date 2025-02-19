@@ -40,8 +40,8 @@ unsigned char getBit(unsigned char c, int n);
 unsigned char setBit(unsigned char c, int n);
 unsigned char clearBit(unsigned char c, int n);
 void printBits(unsigned char c);
-
 int subsys_init(Subsystem *subsystem, const char *name, char status);
+
 int subsys_collection_init(SubsystemCollection *subsystems);
 int subsys_append(SubsystemCollection *subsystems, const Subsystem *subsystem);
 int subsys_find(const SubsystemCollection *subsystems, const char *name);
@@ -51,7 +51,6 @@ int subsys_status_set(Subsystem *subsystem, unsigned char status, unsigned char 
 int subsys_status_print(const Subsystem *subsystem);
 int subsys_data_set(Subsystem *subsystem, unsigned int new_data, unsigned int *old_data);
 int subsys_data_get(Subsystem *subsystem, unsigned int *dest);
-
 int subsys_remove(SubsystemCollection *subsystems, int index);
 int subsys_filter(const SubsystemCollection *src, SubsystemCollection *dest, const unsigned char *filter);
 

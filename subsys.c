@@ -42,6 +42,7 @@ int subsys_print(Subsystem *subsystem){
     return ERR_SUCCESS;
 }
 
+
 int subsys_status_set(Subsystem *subsystem, unsigned char status, unsigned char value) {
     int intStatus = status - '0';
     int intValue = value - '0';
@@ -65,13 +66,13 @@ int subsys_status_set(Subsystem *subsystem, unsigned char status, unsigned char 
                 subsystem->status = clearBit(subsystem->status, 0);
                 break;
             case 3:
-                printf("TEST1");
+                // printf("TEST1");
                 printBits(subsystem->status);
                 subsystem->status = setBit(subsystem->status, 0);
-                printf("TEST2");
+                // printf("TEST2");
                 printBits(subsystem->status);
                 subsystem->status = setBit(subsystem->status, 1);
-                printf("TEST3");
+                // printf("TEST3");
                 printBits(subsystem->status);
                 break;
         }
@@ -88,13 +89,13 @@ int subsys_status_set(Subsystem *subsystem, unsigned char status, unsigned char 
                 subsystem->status = clearBit(subsystem->status, 3);
                 break;
             case 2:
-                printf("TEST1");
+                // printf("TEST1");
                 printBits(subsystem->status);
                 subsystem->status = setBit(subsystem->status, 3);
-                printf("TEST2");
+                // printf("TEST2");
                 printBits(subsystem->status);
                 subsystem->status = clearBit(subsystem->status, 2);
-                printf("TEST3");
+                // printf("TEST3");
                 printBits(subsystem->status);
                 break;
             case 3:

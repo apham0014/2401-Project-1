@@ -27,6 +27,7 @@ int main() {
     unsigned int oldValue= 0;
     unsigned int *oldData = &oldValue;
     Subsystem subsystem;
+    int index = 0;
     
     while (1){
         char name[MAX_STR];
@@ -34,6 +35,7 @@ int main() {
         unsigned char newStatus;
         unsigned char newValue;
         unsigned int newData;
+        char filterInput[9];
 
         print_menu(choice);
         switch (*choice) {
@@ -127,8 +129,34 @@ int main() {
                     subsys_data_set(subsystem2, newData, oldData);
                 }                
                 break;
-                
 
+            case MENU_REMOVE:
+                printf("Enter the location (index) of the subsystem you would like to remove: ");
+                scanf("%d", &index);
+                subsys_remove(&subsystems, index);
+                break;
+            
+            case MENU_FILTER:
+                printf("Enter a string of 8 characters consisting of 1s, 0s and *s: ");
+                scanf("%8s", filterInput);
+                
+                // check the string is validly formatted.
+                if (strlen(filterInput) != 8) {
+                    return ERR_INVALID_INDEX;
+                }
+                
+                for (int i = 0; i<8; i++){
+                    if (filterInput[i] != '1' && filterInput[i] != '0' && filterInput[i] != '*'){
+                        return ERR_INVALID_INDEX;
+                    }
+                }
+                SubsystemCollection newSubsystems;
+                subsys_collection_init(&newSubsystems);
+
+                subsys_filter(&subsystems, &newSubsystems, (const unsigned char *)filterInput);
+                subsystems = newSubsystems;
+                break;
+                
             case MENU_EXIT:
                 return ERR_SUCCESS;
         }
