@@ -49,9 +49,9 @@ int subsys_print(Subsystem *subsystem);
 int subsys_collection_print(SubsystemCollection *subsystems);
 int subsys_status_set(Subsystem *subsystem, unsigned char status, unsigned char value);
 int subsys_status_print(const Subsystem *subsystem);
-
 int subsys_data_set(Subsystem *subsystem, unsigned int new_data, unsigned int *old_data);
 int subsys_data_get(Subsystem *subsystem, unsigned int *dest);
+
 int subsys_remove(SubsystemCollection *subsystems, int index);
 int subsys_filter(const SubsystemCollection *src, SubsystemCollection *dest, const unsigned char *filter);
 

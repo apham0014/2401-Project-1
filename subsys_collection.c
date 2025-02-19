@@ -40,15 +40,10 @@ int subsys_find(const SubsystemCollection *subsystems, const char *name) {
 
 // function that prints each subsystem from the subsystem collection
 int subsys_collection_print(SubsystemCollection *subsystems) {
-
     for (int i = 0; i < subsystems->size; i++) {
-
-        if (subsystems->size == 0) {
-            return ERR_NO_DATA;
-        } else {
-            subsys_print(&(subsystems->subsystems[i]));
-        }
+        subsys_print(&(subsystems->subsystems[i]));
     }
+    
     return ERR_SUCCESS;
 }
 

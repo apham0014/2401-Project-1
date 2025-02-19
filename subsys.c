@@ -29,9 +29,15 @@ int subsys_print(Subsystem *subsystem){
     printf("- [Name: ");
     printf("%-20s", subsystem->name);
     subsys_status_print(subsystem);
-    printf("            ");
-    printf("Data: ");
-    printf("%d", subsystem->data);
+    
+    unsigned int data = 0; 
+
+    int output = subsys_data_get(subsystem, &data);
+    if (output != ERR_NO_DATA){
+        printf("            ");
+        printf("Data: 0x");
+        printf("%08X", data);
+    }
     printf("]\n");
     return ERR_SUCCESS;
 }
@@ -204,8 +210,34 @@ int subsys_status_print(const Subsystem *subsystem){
     return ERR_SUCCESS;
 }
 
+int subsys_data_set(Subsystem *subsystem, unsigned int new_data, unsigned int *old_data){
+    if (old_data != NULL) {
+        *old_data = subsystem->data;
+    }
+
+    subsystem->data = new_data;
+
+    printBits(subsystem->status);
+    subsystem->status = setBit(subsystem->status, STATUS_DATA);
+    printBits(subsystem->status);
+
+    return ERR_SUCCESS;
+}
+
+// function that returns the data value of a subsystem and resets it to 0.
+int subsys_data_get(Subsystem *subsystem, unsigned int *dest){
+    if (getBit(subsystem->status, STATUS_DATA) == 0){
+        return ERR_NO_DATA;
+    }else{
+        *dest = subsystem->data;
+        subsystem->data = 0;
+        subsystem->status = clearBit((subsystem->status), STATUS_DATA);
+        return ERR_SUCCESS;
+    }
+}
 
 
+// HELPER FUNCTIONS
 unsigned char getBit(unsigned char c, int n) {
     return ((c & (1 << n)) >> n);
   }

@@ -24,7 +24,8 @@ int main() {
 
     int space = 0;
     int *choice = &space;
-
+    unsigned int oldValue= 0;
+    unsigned int *oldData = &oldValue;
     Subsystem subsystem;
     
     while (1){
@@ -32,6 +33,7 @@ int main() {
         char newName[MAX_STR];
         unsigned char newStatus;
         unsigned char newValue;
+        unsigned int newData;
 
         print_menu(choice);
         switch (*choice) {
@@ -49,8 +51,26 @@ int main() {
                 break;
 
             case MENU_PRINT:
-                subsys_print(&subsystem);
+                printf("Enter the name of the system you would like to see the status of: ");
+                scanf(" %s", name);
+                Subsystem *subsystem1 = NULL;
+                int flag1 = 0;
+                // iterate through collection to match name
+                for (int i = 0; i < subsystems.size; i++){
+                    if (strcmp(subsystems.subsystems[i].name, name) == 0){
+                        subsystem1 = &subsystems.subsystems[i];
+                        flag1 = 1;
+                        break;
+                    }
+                }
+
+                if (flag1 == 0){
+                    return ERR_SYS_NOT_FOUND;
+                }else{
+                    subsys_print(subsystem1);
+                }                
                 break;
+
             case MENU_PRINTALL:
                 subsys_collection_print(&subsystems);
                 break;
@@ -84,6 +104,31 @@ int main() {
                 
                 break;
 
+            // set data
+            case MENU_DATA:
+                printf("Enter the name of the system you would like to change the value of: ");
+                scanf(" %s", name);
+                Subsystem *subsystem2 = NULL;
+                int flag2 = 0;
+                // iterate through collection to match name
+                for (int i = 0; i < subsystems.size; i++){
+                    if (strcmp(subsystems.subsystems[i].name, name) == 0){
+                        subsystem2 = &subsystems.subsystems[i];
+                        flag2 = 1;
+                        break;
+                    }
+                }
+
+                if (flag2 == 0){
+                    return ERR_SYS_NOT_FOUND;
+                }else{
+                    printf("Enter the new value of the subsystem's data field: ");
+                    scanf("%08X", &newData);
+                    subsys_data_set(subsystem2, newData, oldData);
+                }                
+                break;
+                
+
             case MENU_EXIT:
                 return ERR_SUCCESS;
         }
@@ -91,6 +136,7 @@ int main() {
 
     return 0;
 }
+
 
 /* 
     Prints a menu to the user and prompts them until they enter a valid menu option.
