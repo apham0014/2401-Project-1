@@ -41,11 +41,11 @@ unsigned char setBit(unsigned char c, int n);
 unsigned char clearBit(unsigned char c, int n);
 void printBits(unsigned char c);
 int subsys_init(Subsystem *subsystem, const char *name, char status);
-
 int subsys_collection_init(SubsystemCollection *subsystems);
 int subsys_append(SubsystemCollection *subsystems, const Subsystem *subsystem);
 int subsys_find(const SubsystemCollection *subsystems, const char *name);
 int subsys_print(Subsystem *subsystem);
+
 int subsys_collection_print(SubsystemCollection *subsystems);
 int subsys_status_set(Subsystem *subsystem, unsigned char status, unsigned char value);
 int subsys_status_print(const Subsystem *subsystem);

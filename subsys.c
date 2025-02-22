@@ -23,6 +23,7 @@ int subsys_init(Subsystem *subsystem, const char *name, char status){
     return ERR_SUCCESS;
 }
 
+
 // Function that prints, on a single line, the attributes of a substem instance.
 int subsys_print(Subsystem *subsystem){
 
@@ -66,14 +67,11 @@ int subsys_status_set(Subsystem *subsystem, unsigned char status, unsigned char 
                 subsystem->status = clearBit(subsystem->status, 0);
                 break;
             case 3:
-                // printf("TEST1");
-                printBits(subsystem->status);
+                // printBits(subsystem->status);
                 subsystem->status = setBit(subsystem->status, 0);
-                // printf("TEST2");
-                printBits(subsystem->status);
+                // printBits(subsystem->status);
                 subsystem->status = setBit(subsystem->status, 1);
-                // printf("TEST3");
-                printBits(subsystem->status);
+                // printBits(subsystem->status);
                 break;
         }
         
@@ -89,14 +87,11 @@ int subsys_status_set(Subsystem *subsystem, unsigned char status, unsigned char 
                 subsystem->status = clearBit(subsystem->status, 3);
                 break;
             case 2:
-                // printf("TEST1");
-                printBits(subsystem->status);
+                // printBits(subsystem->status);
                 subsystem->status = setBit(subsystem->status, 3);
-                // printf("TEST2");
-                printBits(subsystem->status);
+                // printBits(subsystem->status);
                 subsystem->status = clearBit(subsystem->status, 2);
-                // printf("TEST3");
-                printBits(subsystem->status);
+                // printBits(subsystem->status);
                 break;
             case 3:
                 subsystem->status = setBit(subsystem->status, 2);
@@ -152,6 +147,7 @@ int subsys_status_set(Subsystem *subsystem, unsigned char status, unsigned char 
     }
     return ERR_SUCCESS;
 }
+
 
 int subsys_status_print(const Subsystem *subsystem){
 

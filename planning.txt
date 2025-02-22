@@ -1,0 +1,58 @@
+
+Session 1
+---------
+Task 1: Create init functions for subsys and subsys_collection.
+    - these should be simple, just initialize the struct attributes.
+
+Task 2: Create subsys_append and subsys_find.
+    1.
+    - this should add subsys to subsys_collection's array, using size as the index.
+    - after, we increment the size attribute.
+
+    2. 
+    - For loop through subsys_collection's array.
+
+
+Task 3: Create subsys_print and subsy_collection_print
+    -  have subsys_collection_print call subsys_print repeatedly for every element of the array.
+
+Task 4: Create a partial main function to test our implementations so far.
+    - Call print_menu to prompt user, then proceed with input using case switch.
+    - Make sure we declare/create variables to store long-term data.
+
+    - Test our functions. Debug and edit where necessary.
+    - Upload to git once done.
+
+
+Session 2
+---------
+Task 1: Create subsys_data_set & subsys_data_get.
+    1.
+    - create helper methods for bit modification (get, set, print).
+    - identify every case using if/elifs & switch case to call the approprate bit function.
+
+    2. 
+    - if the data bit isn't zero, store the data value before clearing the data bit and the data field.
+
+    - Update the print methods such that once data is read or set, the data bit and field change accordingly.
+
+Task 2: Implement the subsys_remove and subsys_filter functions.
+    1.
+    - check for validity of index, then use for loop to shift elements accordingly.
+
+    2. 
+    - go through characters of filter string to construct two masks.
+    - perform bit operation and negate the result to compare to 0000 0000.
+
+Task 3: Test new functions.
+    - update the main function and test our implementations.
+    - upload to git.
+
+
+Session 3
+---------
+Task 1: Polish main function.
+    - ensure the set status option conforms to the provided <> <> <> format.
+    - create comprehensive doc strings for every function.
+    - Upload to git.
+    - zip using linux and upload.
