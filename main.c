@@ -27,6 +27,7 @@ int main() {
     unsigned int oldValue= 0;
     unsigned int *oldData = &oldValue;
     Subsystem subsystem;
+    SubsystemCollection filteredSubsystem;
     int index = 0;
     
     while (1){
@@ -39,21 +40,23 @@ int main() {
 
         print_menu(choice);
         switch (*choice) {
+
+            // add a new subsystem
             case MENU_ADD:
             
-                printf("Enter the name of the new subsystem: ");
+                printf("Enter a name for the new subsystem (no spaces): ");
                 scanf("%31s", newName);
 
                 subsys_init(&subsystem, newName, 0);
                 subsys_append(&subsystems, &subsystem);
 
-                printf("The status for this one is: ");
                 printBits(subsystem.status);
                 
                 break;
 
+            // print the info of a specific subsys
             case MENU_PRINT:
-                printf("Enter the name of the system you would like to see the status of: ");
+                printf("Enter subsystem name to print: ");
                 scanf(" %s", name);
                 Subsystem *subsystem1 = NULL;
                 int flag1 = 0;
@@ -73,13 +76,17 @@ int main() {
                 }                
                 break;
 
+            // print the info of all subsys in a collection
             case MENU_PRINTALL:
                 subsys_collection_print(&subsystems);
                 break;
             
+            // change the status of a subsys
             case MENU_STATUS:
-                printf("Enter the name of the system you would like to change the status of: ");
-                scanf(" %s", name);
+                printf("Enter: <Subsystem Name> <Status ID (7,6,5,4,2, or 0)> <New Value (0-3)>: ");
+
+                scanf("%s %c %c", name, &newStatus, &newValue);
+
                 Subsystem *subsystem = NULL;
                 int flag = 0;
                 // iterate through collection to match name
@@ -95,21 +102,90 @@ int main() {
                     return ERR_SYS_NOT_FOUND;
                 }
 
-                printf("What status would you like to set: ");
-                scanf(" %c", &newStatus);
-                printf("What value would you like to set: ");
-                scanf(" %c", &newValue);
-                subsys_status_set(subsystem, newStatus, newValue);
+                if (newValue == 2 || newValue == 3){
+                    if (newStatus == 0 || newStatus == 2){
+                        continue;
+                    }else{
+                        return ERR_INVALID_STATUS;
+                    }
+                }
 
-                printf("The status for this one is: ");
+                subsys_status_set(subsystem, newStatus, newValue);
                 printBits(subsystem->status);
-                
+                printf("Status updated successfully.");
                 break;
 
-            // set data
+            case MENU_REMOVE:
+            printf("Enter subsystem name to remove: ");
+            scanf("%s", name);
+            printf("%s\n", name);
+            index = subsys_find(&subsystems, name);
+
+            if (index == ERR_SYS_NOT_FOUND) {
+                printf("Error: Subsystem '%s' not found.", name);
+            }
+
+            printf("%d\n", index);
+            subsys_remove(&subsystems, index);
+            printf("Subsystem '%s' removed successfully.", name);
+            break;
+
+            // filter out 
+            case MENU_FILTER:
+                printf("Enter filter string (8 characters of 1, 0, *)");
+                scanf("%8s", filterInput);
+                
+                // check the string is validly formatted.
+                if (strlen(filterInput) != 8) {
+                    return ERR_INVALID_INDEX;
+                }
+                
+                for (int i = 0; i<8; i++){
+                    if (filterInput[i] != '1' && filterInput[i] != '0' && filterInput[i] != '*'){
+                        return ERR_INVALID_INDEX;
+                    }
+                }
+
+                // SubsystemCollection filteredSubsystem;
+                subsys_collection_init(&filteredSubsystem);
+
+                subsys_filter(&subsystems, &filteredSubsystem, (const unsigned char *)filterInput);
+                subsystems = filteredSubsystem;
+                break;
+
+            // set the data of a subsys to a new value.
             case MENU_DATA:
-                printf("Enter the name of the system you would like to change the value of: ");
-                scanf(" %s", name);
+                printf("Enter: <Subsystem Name> <Data, uppercase hex without 0x>: ");
+                // scanf(" %s", name);
+
+                // max 8 characters + null terminator
+                char hexInput[9];
+                scanf(" %s %8s", name, hexInput);
+
+                int isValid = 1;
+
+                for (int i = 0; hexInput[i] != '\0'; i++) {
+                    if (!(hexInput[i] >= '0' && hexInput[i] <= '9') &&  // Check 0-9
+                        !(hexInput[i] >= 'A' && hexInput[i] <= 'F')) {  // Check A-F (uppercase)
+                        isValid = 0;
+                    }
+                }
+
+                if (!isValid) {
+                    printf("Error: Hex value does not exist. ");
+                    break;
+                }
+                
+                sscanf(hexInput, "%X", &newData);
+
+                //scanf(" %s %08x", name, &newData);
+
+                index = subsys_find(&subsystems, name);
+
+                if (index == ERR_SYS_NOT_FOUND) {
+                    printf("Error: Subsystem '%s' not found.", name);
+                }
+                
                 Subsystem *subsystem2 = NULL;
                 int flag2 = 0;
                 // iterate through collection to match name
@@ -124,44 +200,21 @@ int main() {
                 if (flag2 == 0){
                     return ERR_SYS_NOT_FOUND;
                 }else{
-                    printf("Enter the new value of the subsystem's data field: ");
-                    scanf("%08X", &newData);
-                    subsys_data_set(subsystem2, newData, oldData);
-                }                
-                break;
-
-            case MENU_REMOVE:
-                printf("Enter the location (index) of the subsystem you would like to remove: ");
-                scanf("%d", &index);
-                subsys_remove(&subsystems, index);
-                break;
-            
-            case MENU_FILTER:
-                printf("Enter a string of 8 characters consisting of 1s, 0s and *s: ");
-                scanf("%8s", filterInput);
-                
-                // check the string is validly formatted.
-                if (strlen(filterInput) != 8) {
-                    return ERR_INVALID_INDEX;
-                }
-                
-                for (int i = 0; i<8; i++){
-                    if (filterInput[i] != '1' && filterInput[i] != '0' && filterInput[i] != '*'){
-                        return ERR_INVALID_INDEX;
+                    // now if there was data queued, we must print the subsystem before calling the set function.
+                    if (getBit(subsystem2->status, 6) != 0){
+                        printf("The subsystem data before the change is: ");
+                        subsys_print(subsystem2);
                     }
-                }
-                SubsystemCollection newSubsystems;
-                subsys_collection_init(&newSubsystems);
-
-                subsys_filter(&subsystems, &newSubsystems, (const unsigned char *)filterInput);
-                subsystems = newSubsystems;
+                    subsys_data_set(subsystem2, newData, oldData);
+                    printf("The data has now been sucessfully changed to the new value. \n");
+                }                
                 break;
                 
             case MENU_EXIT:
                 return ERR_SUCCESS;
         }
     }
-
+    printf("The main function has terminated.");
     return 0;
 }
 

@@ -27,15 +27,28 @@ int subsys_append(SubsystemCollection *subsystems, const Subsystem *subsystem){
 }
 
 // function that looks through the subsystem collection and trys to find if there is matching name in the subsystem to the name parameter
+// int subsys_find(const SubsystemCollection *subsystems, const char *name) {
+//     for (int i = 0; i < subsystems->size; i++) {
+//         if (subsystems->subsystems[i].name == name) {
+//             return i;
+//         } else {
+//             return ERR_SYS_NOT_FOUND;
+//         }
+//     }
+//     return ERR_SUCCESS;       
+// }
+
 int subsys_find(const SubsystemCollection *subsystems, const char *name) {
+    if (subsystems == NULL || name == NULL) {
+        return ERR_SYS_NOT_FOUND;
+    }
+
     for (int i = 0; i < subsystems->size; i++) {
-        if (subsystems->subsystems[i].name == name) {
+        if (strcmp(subsystems->subsystems[i].name, name) == 0) {
             return i;
-        } else {
-            return ERR_SYS_NOT_FOUND;
         }
     }
-    return ERR_SUCCESS;       
+    return ERR_SYS_NOT_FOUND;       
 }
 
 // function that prints each subsystem from the subsystem collection
@@ -54,7 +67,7 @@ int subsys_remove(SubsystemCollection *subsystems, int index) {
 
     // check if the index exists in the subsystem 
     if (index >= subsystems->size || index < 0) {
-        return ERR_INVALID_INDEX;
+        return ERR_NO_DATA;
     }
 
     // shift all the subsystems to the left of the removed index
@@ -75,6 +88,10 @@ int subsys_remove(SubsystemCollection *subsystems, int index) {
 }
 
 int subsys_filter(const SubsystemCollection *src, SubsystemCollection *dest, const unsigned char *filter){
+    if (src == NULL || dest == NULL || filter == NULL) {
+        return ERR_SYS_NOT_FOUND;
+    }
+
     char filterMask = 0;
     char wildCardMask = 0;
 
@@ -98,19 +115,28 @@ int subsys_filter(const SubsystemCollection *src, SubsystemCollection *dest, con
 
     // now we complete the operation.
     int counter = 0;
-    for (int i = 0; i < src->size; i++){
-        char result = (filterMask ^ dest->subsystems[counter].status) | (wildCardMask);
+    // for (int i = 0; i < src->size; i++){
+    //     char result = (filterMask ^ dest->subsystems[counter].status) | (wildCardMask);
+    //     result = ~result;
+
+    //     if (result == 0){
+    //         subsys_remove(dest, counter);
+            
+    //     }else{
+    //         counter++;
+    //     }
+    // }
+
+    // this new version iterates backwards and should resolve bad shifting
+    for (int i = dest->size - 1; i >= 0; i--) {
+        unsigned char result = (filterMask ^ dest->subsystems[i].status) | wildCardMask;
         result = ~result;
 
-        if (result == 0){
-            subsys_remove(dest, counter);
-            
-        }else{
-            counter++;
+        if (result == 0) {  
+            subsys_remove(dest, i);  // Remove entry
         }
     }
     return ERR_SUCCESS;
-    
 }
 
 

@@ -213,10 +213,7 @@ int subsys_data_set(Subsystem *subsystem, unsigned int new_data, unsigned int *o
     }
 
     subsystem->data = new_data;
-
-    printBits(subsystem->status);
     subsystem->status = setBit(subsystem->status, STATUS_DATA);
-    printBits(subsystem->status);
 
     return ERR_SUCCESS;
 }
@@ -253,6 +250,4 @@ unsigned char getBit(unsigned char c, int n) {
       }
       printf("\n"); 
   }
-
-
 
