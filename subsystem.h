@@ -1,3 +1,6 @@
+// Ahmad Baytamouni 101335293
+// Austin Pham 101333594
+
 #include <stdio.h>
 #include <string.h>
 
